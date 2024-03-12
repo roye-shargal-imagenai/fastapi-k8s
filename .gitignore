@@ -1,0 +1,16 @@
+.idea
+.env
+.pytest_cache
+.coverage
+htmlcov
+venv
+*__pycache__
+*.pyc
+.DS_Store
+/node_modules/*
+/package.json
+/package-lock.json
+.DS_Store
+e2e/resources/db_columns.json
+/.env.prod
+miscellaneous
