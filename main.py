@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
+from bson import json_util  # Import json_util from bson module
 
 app = FastAPI()
 
@@ -30,8 +32,12 @@ async def sign_up(user: User):
 
 
 # Example route to query MongoDB
-@app.get("/get_data_from_mongodb")
-async def get_data_from_mongodb():
+@app.get("/users")
+async def get_all_users():
     # Example query to retrieve data from MongoDB
-    all_users = users_collections.find({})
-    return all_users
+    all_users = list(users_collections.find({}, {"_id": 0}))
+    # Serialize BSON objects to JSON
+    print(all_users)
+    # serialized_users = json_util.dumps(all_users)
+    # Return JSONResponse
+    return JSONResponse(content=all_users, status_code=200)
