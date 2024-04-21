@@ -16,6 +16,5 @@ spec:
       - name: fast-api
         image: fast-api:v1
         imagePullPolicy: IfNotPresent
-
         ports:
         - containerPort: 8000
