@@ -1,38 +1,37 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
-from datetime import date
+from pymongo import MongoClient
 
 app = FastAPI()
 
-SECRET_KEY = "secret-key"
-ALGORITHM = "HS256"
-users = [{"id": 1, "name": "roye"}]
-
-
-@app.get("/health")
-async def root():
-    return {"message": "Hello World"}
-
+client = MongoClient("mongodb://roye:pass@localhost:27017/")
+db = client.local
+users_collections = db.users
 
 class User(BaseModel):
     name: str
-    lastname: str
+    email: str
+    password: str
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
-@app.post("/new-user")
+@app.post("/sign_up")
 async def sign_up(user: User):
-    users.append(user)
-    return "Added user successfully :), userid: %s" % user.name
+    # Example code to insert data into MongoDB
+    users_collections.insert_one({
+        "name": user.name,
+        "email": user.email,
+        "password": user.password
+    })
+    return {"message": "User created successfully"}
 
 
-@app.get("/users")
-async def get_users():
-    return users
 
-
-@app.get("/users/{user_id}")
-def get_single_user(user_id: int):
-    for user in users:
-        if user["id"] == user_id:
-            return user
-    return "None"
+# Example route to query MongoDB
+@app.get("/get_data_from_mongodb")
+async def get_data_from_mongodb():
+    # Example query to retrieve data from MongoDB
+    all_users = users_collections.find({})
+    return all_users
